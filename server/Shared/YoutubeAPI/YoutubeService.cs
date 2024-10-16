@@ -39,7 +39,7 @@ namespace Services.YoutubeAPI
 
             if (!channelResult)
             {
-                Debug.WriteLine("Failed fetching channel: " + result.Message);
+                Debug.WriteLine("Failed fetching channel: " + channelResult.Message);
                 return null;
             }
 

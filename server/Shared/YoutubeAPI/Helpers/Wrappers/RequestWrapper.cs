@@ -75,7 +75,7 @@ namespace Services.YoutubeAPI.Helpers.Wrappers
             if (browseParams is not null)
                 postData.AddValue("params", browseParams);
 
-            Result<JObject> browseResponse = await RequestAsync(ClientType.WEB,"browse", postData, language, region);
+            Result<JObject> browseResponse = await RequestAsync(ClientType.WEB, "browse", postData, language, region);
 
             return browseResponse;
         }
@@ -106,7 +106,7 @@ namespace Services.YoutubeAPI.Helpers.Wrappers
                 return Result.Err<string>("Youtube response invalid for vanity " + vanityUrl);
             }
 
-            if (parsed is null) 
+            if (parsed is null)
                 return Result.Err<string>("Youtube response contained null ID" + vanityUrl);
 
             return Result.Ok(parsed);

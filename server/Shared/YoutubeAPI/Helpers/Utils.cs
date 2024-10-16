@@ -3,6 +3,8 @@ using Newtonsoft.Json.Linq;
 using Services.YoutubeAPI.Helpers.Wrappers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ namespace Services.YoutubeAPI.Helpers
     {
         public static async Task<Result<YoutubeChannel>> GetChannelAsync(string identifier)
         {
-            Result<JObject> result = await RequestWrapper.GetInstance().BrowseAsync(identifier,null,"en","US");
+            Result<JObject> result = await RequestWrapper.GetInstance().BrowseAsync(identifier, null, "en", "US");
 
             if (!result)
                 Result.Err<YoutubeChannel>(result.Message);
@@ -56,7 +58,7 @@ namespace Services.YoutubeAPI.Helpers
                 return Result.Err<YoutubeChannel>(videoParseResult.Message).Append(subscribersParseResult.Message);
             }
 
-            YoutubeChannel channel = new YoutubeChannel() { CustomUrl=baseUrl, Description=description,  Id=id, Title=name, Thumbnail=thumbnail, VideoCount= videoParseResult.Value,SubscriberCount=subscribersParseResult.Value};
+            YoutubeChannel channel = new YoutubeChannel() { CustomUrl = baseUrl, Description = description, Id = id, Title = name, Thumbnail = thumbnail, VideoCount = videoParseResult.Value, SubscriberCount = subscribersParseResult.Value };
 
             return Result.Ok(channel);
         }
@@ -79,7 +81,7 @@ namespace Services.YoutubeAPI.Helpers
 
             double subscriberCount;
 
-            if (!double.TryParse(textSubs, out subscriberCount))
+            if (!double.TryParse(textSubs, CultureInfo.InvariantCulture, out subscriberCount))
             {
                 return Result.Err<ulong>("Subscriber text line format invalid");
             }
@@ -90,20 +92,34 @@ namespace Services.YoutubeAPI.Helpers
         public static Result<ulong> ParseVideos(string textVideos)
         {
             textVideos = textVideos.Split(' ')[0].Replace(",", string.Empty);
-            ulong parsedVideos;
+            char videosIdentifier = textVideos[textVideos.Length - 1];
+            ulong mult = 1;
+            switch (videosIdentifier)
+            {
+                case 'M':
+                    mult = 1000000;
+                    textVideos = textVideos.Substring(0, textVideos.Length - 1);
+                    break;
+                case 'K':
+                    mult = 1000;
+                    textVideos = textVideos.Substring(0, textVideos.Length - 1);
+                    break;
+            }
 
-            if (!ulong.TryParse(textVideos, out parsedVideos))
+            double videosCount;
+            if (!double.TryParse(textVideos, CultureInfo.InvariantCulture, out videosCount))
             {
                 return Result.Err<ulong>("Video text line format invalid");
             }
-            return Result.Ok(parsedVideos);
+            videosCount *= mult;
+            return Result.Ok((ulong)videosCount);
         }
         public static async Task<Result<string>> GetChannelIdFromVanity(string vanity)
         {
             if (!vanity.StartsWith('@'))
                 return Result.Err<string>("Wrong vanity string format");
 
-             Result<string> result = await RequestWrapper.GetInstance().GetChannelIdFromVanity(vanity);
+            Result<string> result = await RequestWrapper.GetInstance().GetChannelIdFromVanity(vanity);
 
             return result;
         }
