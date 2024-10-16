@@ -35,7 +35,7 @@ function Card({ channel }) {
             <div className="sm:flex sm:gap-2">
               <a
                 className="flex sm:block relative"
-                href={channelData.customUrl}
+                href={"https://www.youtube.com" + channelData.customUrl}
                 target="_blank"
               >
                 <h2 className="mt-2 sm:mt-[2px] text-2xl font-bold inline">

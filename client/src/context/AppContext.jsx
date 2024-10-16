@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { getAllCategories, getChannels } from "../api";
 
 export const AppContext = createContext(null);
