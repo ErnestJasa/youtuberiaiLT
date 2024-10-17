@@ -21,12 +21,12 @@ export function AppProvider({ children }) {
     }));
   }
 
-  async function handleSearchTermChange(searchTerm) {
-    setSearchQuery((prevQuery) => ({
-      ...prevQuery,
-      search: searchTerm,
-    }));
-  }
+  // async function handleSearchTermChange(searchTerm) {
+  //   setSearchQuery((prevQuery) => ({
+  //     ...prevQuery,
+  //     search: searchTerm,
+  //   }));
+  // }
 
   function removeCategoryFromSearch(category) {
     const tempIncludeCategories = searchQuery.includeCategories.filter(
@@ -82,7 +82,7 @@ export function AppProvider({ children }) {
         setCategories,
         setChannels,
         handleSearchInputChange,
-        handleSearchTermChange,
+        // handleSearchTermChange,
         removeCategoryFromSearch,
         getChannelsData,
         getCategories,

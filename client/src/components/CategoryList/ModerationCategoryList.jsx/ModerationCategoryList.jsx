@@ -4,6 +4,8 @@ import { AppContext } from "../../../context/AppContext";
 import { getAllCategories, removeCategory } from "../../../api";
 import { ModerationContext } from "../../../context/ModerationContext";
 import Loader from "../../Loader/Loader";
+
+// TODO fix the category search handling
 function ModerationCategoryList() {
   const {
     handleCategory,

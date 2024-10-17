@@ -25,6 +25,6 @@ namespace Helpers.Strings
                 }
             }
             return stringBuilder.ToString().ToUpperInvariant(); 
-        }
+        }    
     }
 }

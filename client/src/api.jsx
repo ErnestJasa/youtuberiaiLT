@@ -266,3 +266,30 @@ export async function authorize(secretPhrase) {
     console.log(e);
   }
 }
+
+export async function postSuggestion(suggestionTerm, suggestionCategories) {
+  try {
+    const response = await fetch(`${apiURL}/api/Discord`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: suggestionTerm,
+        categories: suggestionCategories,
+      }),
+    });
+    // const responseObj = {
+    //   success: false,
+    //   message: response.json(),
+    // };
+    const responseObject = await response.json();
+    if (response.status >= 200 && response.status < 300) {
+      return { ...responseObject, success: true };
+    } else {
+      return { ...responseObject, success: false };
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}

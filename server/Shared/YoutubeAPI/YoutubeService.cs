@@ -52,6 +52,17 @@ namespace Services.YoutubeAPI
                 return await getChannelByHandle(identifier);
 
             return await getChannelById(identifier);
+        } 
+        public async Task<bool> ChannelExists(string identifier)
+        {
+            var channel = await getChannel(identifier);
+
+            if (channel is not null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

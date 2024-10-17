@@ -22,5 +22,6 @@ namespace DataAccessLayer.Interfaces
         Task<Result<YoutubeChannel>> AddCetegoryAsync(string channelId, string newCategory);
         Task<Result<YoutubeChannel>> RemoveCetegoryAsync(string channelId, string newCategory);
         Task<Result> DeleteByIdAsync(string id);
+        Task<bool> ChannelExists(string identifier);
     }
 }

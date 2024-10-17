@@ -129,7 +129,7 @@ namespace DataAccessLayer.Repositories
 
             if (!string.IsNullOrWhiteSpace(query.ChannelHandle))
             {
-                channels = channels.Where(x => x.Title.Contains(query.ChannelHandle) || x.CustomUrl.Contains(query.ChannelHandle));
+                channels = channels.Where(x => x.Title.ToLower().Contains(query.ChannelHandle.ToLower()) || x.CustomUrl.ToLower().Contains(query.ChannelHandle.ToLower()));
             }
 
             if (query.IncludeCategories is not null && query.IncludeCategories.Any())
@@ -319,6 +319,12 @@ namespace DataAccessLayer.Repositories
             }
 
             return await channels.CountAsync();
+        }
+
+        public async Task<bool> ChannelExists(string identifier)
+        {
+
+            return await _dbContext.Channels.AnyAsync(x=> x.Id == identifier || x.CustomUrl.TrimStart('/').ToLower() == identifier.ToLower());
         }
     }
 }
