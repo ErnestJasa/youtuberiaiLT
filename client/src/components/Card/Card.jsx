@@ -4,7 +4,7 @@ import refreshSVG from "../../assets/icons/refresh.svg";
 import Category from "../Category/Category";
 import { updateChannel } from "../../api";
 import Loader from "../Loader/Loader";
-import { formatNumber } from "../../helpers/NumberFormating";
+import { formatNumber } from "../../helpers/NumberFormatting";
 
 function Card({ channel }) {
   const [channelData, setChannelData] = useState(channel);

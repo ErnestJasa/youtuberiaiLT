@@ -13,42 +13,7 @@ export function AppProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
-  function handleCategory(categoryName) {
-    const prevIncludeCategories = searchQuery.includeCategories;
-    const prevExcludeCategories = searchQuery.includeCategories;
-    if (
-      !searchQuery.includeCategories.includes(categoryName) &&
-      !searchQuery.excludeCategories.includes(categoryName)
-    ) {
-      setSearchQuery((prevQuery) => ({
-        ...prevQuery,
-        includeCategories: [...prevIncludeCategories, categoryName],
-      }));
-      return;
-    }
-    if (searchQuery.includeCategories.includes(categoryName)) {
-      const tempIncludeCategories = searchQuery.includeCategories.filter(
-        (catName) => catName !== categoryName
-      );
 
-      setSearchQuery((prevQuery) => ({
-        ...prevQuery,
-        includeCategories: tempIncludeCategories,
-        excludeCategories: [...prevExcludeCategories, categoryName],
-      }));
-      return;
-    }
-    if (searchQuery.excludeCategories.includes(categoryName)) {
-      const tempExcludeCategories = searchQuery.excludeCategories.filter(
-        (catName) => catName !== categoryName
-      );
-      setSearchQuery((prevQuery) => ({
-        ...prevQuery,
-        excludeCategories: tempExcludeCategories,
-      }));
-      return;
-    }
-  }
   function handleSearchInputChange(e) {
     setSearchQuery((prevQuery) => ({
       ...prevQuery,
@@ -60,13 +25,6 @@ export function AppProvider({ children }) {
     setSearchQuery((prevQuery) => ({
       ...prevQuery,
       search: searchTerm,
-    }));
-  }
-
-  async function handleSortingChange(sortBy) {
-    setSearchQuery((prevQuery) => ({
-      ...prevQuery,
-      sortOrder: sortBy,
     }));
   }
 
@@ -123,14 +81,13 @@ export function AppProvider({ children }) {
         setChannelsLoading,
         setCategories,
         setChannels,
-        handleCategory,
         handleSearchInputChange,
         handleSearchTermChange,
         removeCategoryFromSearch,
         getChannelsData,
         getCategories,
-        handleSortingChange,
         getMoreChannels,
+        setSearchQuery,
       }}
     >
       {children}

@@ -2,14 +2,13 @@ import Category from "../Category/Category";
 import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 import Loader from "../Loader/Loader";
-function CategoryList() {
-  const {
-    handleCategory,
-    searchQuery,
-    categories,
-    getCategories,
-    categoriesLoading,
-  } = useContext(AppContext);
+function CategoryList({
+  handleCategory,
+  includeCategories = [],
+  excludeCategories = [],
+}) {
+  const { categories, getCategories, categoriesLoading } =
+    useContext(AppContext);
   useEffect(() => {
     getCategories();
   }, []);
@@ -23,9 +22,9 @@ function CategoryList() {
               <button
                 onClick={() => handleCategory(category.name)}
                 className={`${
-                  searchQuery.includeCategories.includes(category.name)
+                  includeCategories.includes(category.name)
                     ? "bg-purple border border-[#7f74c7] text-white"
-                    : searchQuery.excludeCategories.includes(category.name)
+                    : excludeCategories.includes(category.name)
                     ? "bg-gold border border-[#e6931d] text-white"
                     : "bg-gray-light border border-white"
                 } px-2 rounded-full `}

@@ -1,14 +1,9 @@
-import { useContext } from "react";
-import { AppContext } from "../../context/AppContext";
-
-function SortSelection() {
-  const { handleSortingChange, searchQuery } = useContext(AppContext);
-
+function SortSelection({ handleSortingChange, sortOrder }) {
   return (
-    <form>
+    <>
       <select
         onChange={(e) => handleSortingChange(e.target.value)}
-        value={searchQuery.sortOrder}
+        value={sortOrder}
         id="sort-select"
       >
         <option value="Default">Rūšiuoti</option>
@@ -17,7 +12,7 @@ function SortSelection() {
         <option value="BySubCountAscending">Prenumeratų sk. Min-Max</option>
         <option value="BySubCountDescending">Prenumeratų sk. Max-Min</option>
       </select>
-    </form>
+    </>
   );
 }
 export default SortSelection;
