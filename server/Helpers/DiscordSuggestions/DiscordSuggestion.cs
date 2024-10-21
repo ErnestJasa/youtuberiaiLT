@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace Helpers.DiscordSuggestions
 {
-    public class Suggestion
+    public class DiscordSuggestion
     {
         public static string PrepMessage(DiscordMsgBodyObject suggestion)
         {
             string categoriesString = "";
-
-            if (suggestion.Categories is not null)
+            if (suggestion.Categories is not null && suggestion.Categories.Count() != 0)
             {
                 categoriesString = "\ntags: " + stringifyCategories(suggestion.Categories); ;
             }
@@ -51,11 +50,11 @@ namespace Helpers.DiscordSuggestions
                 Uri uri = new Uri(url);
                 url = uri.Host + uri.PathAndQuery;
             }
-            var split = url.Split('/');
-            var handle = split[1];
-            if (split[1] == "c" || split[1] == "channel")
+            var splitURL = url.Split('/');
+            var handle = splitURL[1];
+            if (splitURL[1] == "c" || splitURL[1] == "channel")
             {
-                handle = split[2];
+                handle = splitURL[2];
             }
             return handle;
         }

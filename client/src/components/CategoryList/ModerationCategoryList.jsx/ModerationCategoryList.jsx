@@ -6,16 +6,13 @@ import { ModerationContext } from "../../../context/ModerationContext";
 import Loader from "../../Loader/Loader";
 
 // TODO fix the category search handling
-function ModerationCategoryList() {
-  const {
-    handleCategory,
-    searchQuery,
-    setCategories,
-    removeCategoryFromSearch,
-    categories,
-    categoriesLoading,
-    getCategories,
-  } = useContext(AppContext);
+function ModerationCategoryList({
+  handleCategoryClick,
+  includeCategories,
+  excludeCategories,
+}) {
+  const { setCategories, categories, categoriesLoading, getCategories } =
+    useContext(AppContext);
   const { secretPhrase } = useContext(ModerationContext);
 
   async function handleRemoveCategory(category) {
@@ -23,7 +20,6 @@ function ModerationCategoryList() {
     if (confirm) {
       const removed = await removeCategory(category, secretPhrase);
       if (removed) {
-        removeCategoryFromSearch(category);
         const data = await getAllCategories();
         setCategories(data);
       }
@@ -42,15 +38,15 @@ function ModerationCategoryList() {
               <div
                 key={category.name}
                 className={`${
-                  searchQuery.includeCategories.includes(category.name)
+                  includeCategories.includes(category.name)
                     ? "bg-purple border border-[#7f74c7] text-white"
-                    : searchQuery.excludeCategories.includes(category.name)
+                    : excludeCategories.includes(category.name)
                     ? "bg-gold border border-[#e6931d] text-white"
                     : "bg-gray-light border border-white"
                 } flex rounded-full`}
               >
                 <button
-                  onClick={() => handleCategory(category.name)}
+                  onClick={() => handleCategoryClick(category.name)}
                   className={` px-2 rounded-l-full `}
                 >
                   <Category category={category} />

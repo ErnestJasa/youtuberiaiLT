@@ -2,23 +2,19 @@ import { useRef, useState } from "react";
 import CategoryList from "../../CategoryList/CategoryList";
 import { removeFromArray } from "../../../helpers/ArrayHelpers";
 import { postSuggestion } from "../../../api";
+import Loader from "../../Loader/Loader";
 
 function SuggestionForm() {
   const inputRef = useRef(null);
-  // const [suggestion, setSuggestion] = useState({
-  //   channel: "",
-  //   categories: [],
-  // });
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [canSuggest, setCanSuggest] = useState(true);
-
   const [categories, setCategories] = useState([]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (inputRef.current.value === "" || inputRef.current.length <= 0) {
+    if (inputRef.current.value.trim() === "" || inputRef.current.length <= 0) {
       setMessage("Pasiūlymo laukas yra privalomas.");
       setSuccess(false);
       return;
@@ -29,7 +25,10 @@ function SuggestionForm() {
       const response = await postSuggestion(inputRef.current.value, categories);
       setSuccess(response.success);
       setMessage(response.message);
-      inputRef.current.value = "";
+      if (response.success) {
+        inputRef.current.value = "";
+        setCategories([]);
+      }
       setTimeout(() => {
         setCanSuggest(true);
       }, 5000);
@@ -42,7 +41,7 @@ function SuggestionForm() {
     setLoading(false);
   }
 
-  function handleCategory(category) {
+  function handleCategoryClick(category) {
     if (categories.includes(category)) {
       setCategories(removeFromArray(categories, category));
       if (categories.length <= 5) {
@@ -65,30 +64,18 @@ function SuggestionForm() {
     <div className="flex flex-col md:w-[50%] gap-3">
       <div>
         <CategoryList
-          handleCategory={handleCategory}
+          handleCategoryClick={handleCategoryClick}
           includeCategories={categories}
         />
       </div>
-      {loading && (
-        <div className="text-white text-center text-xl">Siunčiama....</div>
-      )}
-      {message && !loading && (
-        <div
-          className={`${
-            success ? "text-emerald-400" : " text-red-400"
-          } text-center text-xl`}
-        >
-          {message}
-        </div>
-      )}
+
       <form
         onSubmit={handleSubmit}
         className="rounded-full bg-slate-300 text-xl flex "
       >
         <input
           ref={inputRef}
-          // value={suggestion.channel}
-          // onChange={handleChange}
+          required
           className="rounded-l-full py-1 bg-slate-100 px-3 w-full"
           type="text"
           placeholder="Pasiūlymas..."
@@ -101,6 +88,16 @@ function SuggestionForm() {
           Pateikti
         </button>
       </form>
+      {loading && <Loader />}
+      {message && !loading && (
+        <div
+          className={`${
+            success ? "text-emerald-400" : " text-red-400"
+          } text-center text-xl`}
+        >
+          {message}
+        </div>
+      )}
     </div>
   );
 }

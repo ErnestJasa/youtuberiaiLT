@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 import Loader from "../Loader/Loader";
 function CategoryList({
-  handleCategory,
+  handleCategoryClick,
   includeCategories = [],
   excludeCategories = [],
 }) {
@@ -20,7 +20,7 @@ function CategoryList({
           {categories.map((category) => {
             return (
               <button
-                onClick={() => handleCategory(category.name)}
+                onClick={() => handleCategoryClick(category.name)}
                 className={`${
                   includeCategories.includes(category.name)
                     ? "bg-purple border border-[#7f74c7] text-white"

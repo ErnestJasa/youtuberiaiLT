@@ -4,7 +4,8 @@ import { AppContext } from "../../context/AppContext";
 import CategoryList from "../CategoryList/CategoryList";
 import SortSelection from "../SortSelection/SortSelection";
 import { removeFromArray } from "../../helpers/ArrayHelpers";
-function Search() {
+import ModerationCategoryList from "../CategoryList/ModerationCategoryList.jsx/ModerationCategoryList";
+function Search({ moderation = false }) {
   const inputRef = useRef(null);
   const { searchQuery, setSearchQuery } = useContext(AppContext);
 
@@ -17,7 +18,7 @@ function Search() {
     }));
   }
 
-  function handleCategory(categoryName) {
+  function handleCategorySearch(categoryName) {
     const prevIncludeCategories = searchQuery.includeCategories;
     const prevExcludeCategories = searchQuery.includeCategories;
 
@@ -69,11 +70,19 @@ function Search() {
   }
   return (
     <>
-      <CategoryList
-        handleCategory={handleCategory}
-        includeCategories={searchQuery.includeCategories}
-        excludeCategories={searchQuery.excludeCategories}
-      />
+      {moderation ? (
+        <ModerationCategoryList
+          handleCategoryClick={handleCategorySearch}
+          includeCategories={searchQuery.includeCategories}
+          excludeCategories={searchQuery.excludeCategories}
+        />
+      ) : (
+        <CategoryList
+          handleCategoryClick={handleCategorySearch}
+          includeCategories={searchQuery.includeCategories}
+          excludeCategories={searchQuery.excludeCategories}
+        />
+      )}
       <form onSubmit={handleSearchSubmit} className="w-full my-3">
         <div className="w-full flex bg-[#e8e8e8] rounded-full ">
           <input

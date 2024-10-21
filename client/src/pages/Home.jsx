@@ -33,13 +33,9 @@ function Home() {
       <div className="text-white py-1 px-4 rounded-xl border border-orange-200 text-xl">
         <Link to="/kanalu-pasiulymai">Kanalų pasiūlymai</Link>
       </div>
-      {/* <article className="2xl:max-w-[30%] max-w-full xl:max-w-[40%] lg:max-w-[60%] md:max-w-[75%] my-3">
-        <CategoryList />
-      </article> */}
-      <div className="2xl:w-[30%] w-full xl:w-[40%] lg:w-[60%] md:w-[75%] my-3">
+      <article className="2xl:w-[30%] w-full xl:w-[40%] lg:w-[60%] md:w-[75%] my-3">
         <Search />
-        {/* <SortSelection /> */}
-      </div>
+      </article>
       <article className="2xl:w-[30%] w-full xl:w-[40%] lg:w-[60%] md:w-[75%] my-3">
         <CardList />
       </article>

@@ -45,9 +45,9 @@ namespace server.Controllers
                 return BadRequest(new { message = "Maksimalus kategorijų skaičius yra 5." });
             }
 
-            if (Suggestion.isURL(requestObject.Message))
+            if (DiscordSuggestion.isURL(requestObject.Message))
             {
-                string handle = Suggestion.getHandleFromUrl(requestObject.Message);
+                string handle = DiscordSuggestion.getHandleFromUrl(requestObject.Message);
                 if (!await _ytService.ChannelExists(handle))
                 {
                     return NotFound(new { message = "Pasiūlytas kanalas nerastas" });
@@ -70,7 +70,7 @@ namespace server.Controllers
             }
            
 
-            string message = Suggestion.PrepMessage(requestObject);
+            string message = DiscordSuggestion.PrepMessage(requestObject);
 
             await _client.LoginAsync(TokenType.Bot, _token);
             await _client.StartAsync();

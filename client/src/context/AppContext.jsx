@@ -21,27 +21,6 @@ export function AppProvider({ children }) {
     }));
   }
 
-  // async function handleSearchTermChange(searchTerm) {
-  //   setSearchQuery((prevQuery) => ({
-  //     ...prevQuery,
-  //     search: searchTerm,
-  //   }));
-  // }
-
-  function removeCategoryFromSearch(category) {
-    const tempIncludeCategories = searchQuery.includeCategories.filter(
-      (catName) => catName !== category
-    );
-    const tempExcludeCategories = searchQuery.excludeCategories.filter(
-      (catName) => catName !== category
-    );
-    setSearchQuery((prevQuery) => ({
-      ...prevQuery,
-      includeCategories: tempIncludeCategories,
-      excludeCategories: tempExcludeCategories,
-    }));
-  }
-
   function getChannelsData() {
     setChannelsLoading(true);
     getChannels(searchQuery).then((data) => {
@@ -57,8 +36,6 @@ export function AppProvider({ children }) {
     getChannels(searchQuery, pageNumber).then((data) => {
       if (data) {
         setChannels((prevChannels) => [...prevChannels, ...data]);
-      } else {
-        setChannels([...channels]);
       }
     });
   }
@@ -82,8 +59,6 @@ export function AppProvider({ children }) {
         setCategories,
         setChannels,
         handleSearchInputChange,
-        // handleSearchTermChange,
-        removeCategoryFromSearch,
         getChannelsData,
         getCategories,
         getMoreChannels,
