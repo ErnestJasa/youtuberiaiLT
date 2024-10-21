@@ -45,8 +45,6 @@ namespace server.Controllers
         [HttpGet("{channelId}")]
         public async Task<IActionResult> GetChannel(string channelId, [FromQuery] bool update = true)
         {
-            //YoutubeChannel? channel = null;
-
             var result = update switch
             { 
                  true => await _ytRepository.GetAndUpdateByIdAsync(channelId),
@@ -155,7 +153,7 @@ namespace server.Controllers
             var result = await _ytRepository.CreateByIdAsync(channelId);
             if (result.IsSuccess)
             {                
-                return Ok(result.Value);
+                return Ok(new { data = result.Value, message = "Kanalas sėkmingai pridėtas."});
             }
             if (result.IsFailed)
             {

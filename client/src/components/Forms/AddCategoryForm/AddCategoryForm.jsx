@@ -1,51 +1,34 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { addCategory } from "../../../api";
 import { ModerationContext } from "../../../context/ModerationContext";
 
 function AddCategoryForm() {
+  const inputRef = useRef(null);
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
   const { categories, setCategories } = useContext(AppContext);
   const { secretPhrase } = useContext(ModerationContext);
-  const [newCategory, setNewCategory] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
-  const [error, setError] = useState({
-    success: false,
-    message: "",
-  });
+
   async function handleAddCategory(e) {
     e.preventDefault();
-    const responseCategory = await addCategory(newCategory, secretPhrase);
-    if (responseCategory !== null) {
-      setError({ success: true, message: "Sėkmingai pridėta." });
-      setShowMessage(true);
-      setCategories([...categories, responseCategory]);
-    } else {
-      setShowMessage(true);
-      setError({ success: false, message: "Kategorijos pridėti nepavyko." });
+    const newCategory = inputRef.current.value;
+    const response = await addCategory(newCategory, secretPhrase);
+    if (response.success) {
+      setCategories([...categories, response.data]);
     }
+    setSuccess(response.success);
+    setMessage(response.message);
   }
-  function handleCategoryInputChange(e) {
-    setNewCategory(e.target.value);
-  }
+
   return (
     <>
-      {showMessage && (
-        <div className="text-center my-2">
-          <h3
-            className={`${
-              error.success ? "text-green-600" : "text-red-600"
-            } text-2xl`}
-          >
-            {error.message}
-          </h3>
-        </div>
-      )}
       <form
         onSubmit={handleAddCategory}
         className="rounded-full bg-slate-300 text-xl flex"
       >
         <input
-          onChange={handleCategoryInputChange}
+          ref={inputRef}
           className="rounded-l-full py-1 bg-slate-100 px-3 w-full"
           type="text"
           placeholder="Kategorija..."
@@ -57,6 +40,13 @@ function AddCategoryForm() {
           Pridėti
         </button>
       </form>
+      <div className="text-center my-2">
+        <h3
+          className={`${success ? "text-emerald-400" : "text-red-400"} text-xl`}
+        >
+          {message}
+        </h3>
+      </div>
     </>
   );
 }

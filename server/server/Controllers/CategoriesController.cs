@@ -59,7 +59,7 @@ namespace server.Controllers
             }
             if (result.IsSuccess)
             {
-                return Ok(result.Value);
+                return Ok(new { data = result.Value, message = "Kategorija sėkmingai pridėta." });
             }
             return BadRequest();
         }

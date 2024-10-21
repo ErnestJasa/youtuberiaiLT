@@ -39,7 +39,6 @@ function Moderation() {
           </article>
           <div className="2xl:w-[30%] w-full xl:w-[40%] lg:w-[60%] md:w-[75%] m-2">
             <Search moderation={true} />
-            <SortSelection />
           </div>
           <article className="w-[70%] m-2">
             <ModerationCardList />

@@ -81,11 +81,11 @@ export async function addChannel(channelId, secretPhrase) {
       },
       body: JSON.stringify(channelId),
     });
+
     if (response.status >= 200 && response.status < 300) {
-      const data = await response.json();
-      return data;
+      return { ...(await response.json()), success: true };
     } else {
-      return null;
+      return { ...(await response.json()), success: false };
     }
   } catch (e) {
     console.log(e);
@@ -205,12 +205,11 @@ export async function addCategory(newCategory, secretPhrase) {
       },
       body: JSON.stringify(newCategory),
     });
-    console.log(response);
+
     if (response.status >= 200 && response.status < 300) {
-      const data = await response.json();
-      return data;
+      return { ...(await response.json()), success: true };
     } else {
-      return null;
+      return { ...(await response.json()), success: false };
     }
   } catch (e) {
     console.log(e);
@@ -279,15 +278,10 @@ export async function postSuggestion(suggestionTerm, suggestionCategories) {
         categories: suggestionCategories,
       }),
     });
-    // const responseObj = {
-    //   success: false,
-    //   message: response.json(),
-    // };
-    const responseObject = await response.json();
     if (response.status >= 200 && response.status < 300) {
-      return { ...responseObject, success: true };
+      return { ...(await response.json()), success: true };
     } else {
-      return { ...responseObject, success: false };
+      return { ...(await response.json()), success: false };
     }
   } catch (e) {
     console.log(e);

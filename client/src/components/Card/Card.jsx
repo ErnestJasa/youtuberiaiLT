@@ -9,7 +9,6 @@ import { formatNumber } from "../../helpers/NumberFormatting";
 function Card({ channel }) {
   const [channelData, setChannelData] = useState(channel);
   const [loading, setLoading] = useState(false);
-  // let channelData = channel;
   async function handleUpdateClick(channelId) {
     setLoading(true);
     const response = await updateChannel(channelId);
