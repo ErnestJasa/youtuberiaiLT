@@ -16,6 +16,7 @@ namespace DataAccessLayer.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly IYoutubeService _ytService;
+
         public YoutuberRepository(AppDbContext dbContext, IYoutubeService ytService)
         {
             _dbContext = dbContext;
@@ -33,10 +34,11 @@ namespace DataAccessLayer.Repositories
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             var categoryToRemove = channel.Categories
                 .FirstOrDefault(x => x.CategoryNormalizedName == normalizedCategory);
 
-            if (categoryToRemove != null) 
+            if (categoryToRemove != null)
             {
                 channel.Categories.Remove(categoryToRemove);
                 await _dbContext.SaveChangesAsync();
@@ -48,16 +50,17 @@ namespace DataAccessLayer.Repositories
         public async Task<Result<YoutubeChannel>> AddCetegoryAsync(string chanelId, string newCategory)
         {
             var channel = await _dbContext.Channels
-             .Include(x => x.Categories)
-             .ThenInclude(x => x.Category)
-             .FirstOrDefaultAsync(x => x.Id == chanelId);
+                .Include(x => x.Categories)
+                .ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == chanelId);
             if (channel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             var category = await _dbContext.Categories
                 .FirstOrDefaultAsync(x => x.Name.ToLower() == newCategory.ToLower()
-                || x.NormalizedName.ToLower() == newCategory.ToLower());
+                                          || x.NormalizedName.ToLower() == newCategory.ToLower());
             if (category is null)
             {
                 category = new Category()
@@ -67,6 +70,7 @@ namespace DataAccessLayer.Repositories
                 };
                 await _dbContext.Categories.AddAsync(category);
             }
+
             var channelCategory = new ChannelCategory()
             {
                 ChannelId = chanelId,
@@ -74,8 +78,8 @@ namespace DataAccessLayer.Repositories
                 CategoryNormalizedName = category.NormalizedName,
             };
             if (!channel.Categories
-                .Any(x => x.CategoryName.ToLower() == category.Name.ToLower()
-                || x.CategoryNormalizedName == category.NormalizedName))
+                    .Any(x => x.CategoryName.ToLower() == category.Name.ToLower()
+                              || x.CategoryNormalizedName == category.NormalizedName))
             {
                 channel.Categories.Add(channelCategory);
                 await _dbContext.ChannelCategories.AddAsync(channelCategory);
@@ -88,20 +92,21 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Result<YoutubeChannel>> CreateByIdAsync(string id)
         {
-            
             var channel = await _ytService.getChannelById(id);
             if (channel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             var channelFromDb = await _dbContext.Channels
-                 .Include(x => x.Categories)
-                 .ThenInclude(x => x.Category)
-                 .FirstOrDefaultAsync(x => x.Id == channel.Id);
+                .Include(x => x.Categories)
+                .ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == channel.Id);
             if (channelFromDb is not null)
             {
                 return Result.Fail(ErrorTypes.Exists);
             }
+
             await _dbContext.Channels.AddAsync(channel);
             await _dbContext.SaveChangesAsync();
 
@@ -124,12 +129,15 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Result<List<YoutubeChannel>>> GetAllAsync(SearchQueryObject query)
         {
-            IQueryable<YoutubeChannel>? channels = channels = _dbContext.Channels.Include(x => x.Categories).ThenInclude(c => c.Category).AsQueryable();
+            IQueryable<YoutubeChannel>? channels = channels = _dbContext.Channels.Include(x => x.Categories)
+                .ThenInclude(c => c.Category).AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(query.ChannelHandle))
             {
-                channels = channels.Where(x => x.Title.ToLower().Contains(query.ChannelHandle.ToLower()) || x.CustomUrl.ToLower().Contains(query.ChannelHandle.ToLower()));
+                channels = channels.Where(x =>
+                    x.Title.ToLower().Contains(query.ChannelHandle.ToLower()) ||
+                    x.CustomUrl.ToLower().Contains(query.ChannelHandle.ToLower()));
             }
 
             if (query.IncludeCategories is not null && query.IncludeCategories.Any())
@@ -139,10 +147,11 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.Where(c => query.IncludeCategories
                         .Any(category => c.Categories
-                        .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
-                        || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
+                            .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
+                                      || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }
             }
+
             if (query.ExcludeCategories is not null && query.ExcludeCategories.Any())
             {
                 query.ExcludeCategories = query.ExcludeCategories.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -150,10 +159,11 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.Where(c => !query.ExcludeCategories
                         .Any(category => c.Categories
-                        .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
-                        || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
+                            .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
+                                      || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }
             }
+
             if (query.SortOrder is not null)
             {
                 // By Title Sorting
@@ -161,6 +171,7 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.OrderBy(x => x.Title);
                 }
+
                 if (query.SortOrder == Domain.Enums.SortOrder.ByHandleDescending)
                 {
                     channels = channels.OrderByDescending(x => x.Title);
@@ -171,10 +182,15 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.OrderBy(x => x.SubscriberCount);
                 }
+
                 if (query.SortOrder == Domain.Enums.SortOrder.BySubCountDescending)
                 {
                     channels = channels.OrderByDescending(x => x.SubscriberCount);
                 }
+            }
+            else
+            {
+                channels = channels.OrderBy(x => x.Id);
             }
 
 
@@ -182,8 +198,6 @@ namespace DataAccessLayer.Repositories
             return await channels.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        
-        
 
         public async Task<Result<YoutubeChannel>> GetAndUpdateByIdAsync(string id)
         {
@@ -192,11 +206,13 @@ namespace DataAccessLayer.Repositories
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             var channel = await _ytService.getChannelById(id);
             if (channel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             channel = UpdateAsync(channel).Result.Value;
 
             return channel;
@@ -204,7 +220,8 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Result<YoutubeChannel>> GetByIdAsync(string id)
         {
-            var channel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
+            var channel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (channel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
@@ -214,14 +231,15 @@ namespace DataAccessLayer.Repositories
         }
 
 
-
         public async Task<Result<YoutubeChannel>> UpdateAsync(YoutubeChannel channel)
         {
-            var existingChannel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category).FirstOrDefaultAsync(x => x.Id == channel.Id);
+            var existingChannel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == channel.Id);
             if (existingChannel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
             }
+
             existingChannel.Title = channel.Title;
             existingChannel.Description = channel.Description;
             existingChannel.CustomUrl = channel.CustomUrl;
@@ -237,7 +255,8 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Result<YoutubeChannel>> UpdateByIdAsync(string id)
         {
-            var existingChannel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
+            var existingChannel = await _dbContext.Channels.Include(x => x.Categories).ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (existingChannel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
@@ -264,13 +283,14 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Result<int>> GetEntriesCount(SearchQueryObject query)
         {
-
-            IQueryable<YoutubeChannel>? channels = channels = _dbContext.Channels.Include(x => x.Categories).ThenInclude(c => c.Category).AsQueryable();
+            IQueryable<YoutubeChannel>? channels = channels = _dbContext.Channels.Include(x => x.Categories)
+                .ThenInclude(c => c.Category).AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(query.ChannelHandle))
             {
-                channels = channels.Where(x => x.Title.Contains(query.ChannelHandle) || x.CustomUrl.Contains(query.ChannelHandle));
+                channels = channels.Where(x =>
+                    x.Title.Contains(query.ChannelHandle) || x.CustomUrl.Contains(query.ChannelHandle));
             }
 
             if (query.IncludeCategories is not null && query.IncludeCategories.Any())
@@ -280,10 +300,11 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.Where(c => query.IncludeCategories
                         .Any(category => c.Categories
-                        .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
-                        || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
+                            .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
+                                      || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }
             }
+
             if (query.ExcludeCategories is not null && query.ExcludeCategories.Any())
             {
                 query.ExcludeCategories = query.ExcludeCategories.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -291,10 +312,11 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.Where(c => !query.ExcludeCategories
                         .Any(category => c.Categories
-                        .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
-                        || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
+                            .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
+                                      || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }
             }
+
             if (query.SortOrder is not null)
             {
                 // By Title Sorting
@@ -302,6 +324,7 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.OrderBy(x => x.Title);
                 }
+
                 if (query.SortOrder == Domain.Enums.SortOrder.ByHandleDescending)
                 {
                     channels = channels.OrderByDescending(x => x.Title);
@@ -312,6 +335,7 @@ namespace DataAccessLayer.Repositories
                 {
                     channels = channels.OrderBy(x => x.SubscriberCount);
                 }
+
                 if (query.SortOrder == Domain.Enums.SortOrder.BySubCountDescending)
                 {
                     channels = channels.OrderByDescending(x => x.SubscriberCount);
@@ -323,8 +347,8 @@ namespace DataAccessLayer.Repositories
 
         public async Task<bool> ChannelExists(string identifier)
         {
-
-            return await _dbContext.Channels.AnyAsync(x=> x.Id == identifier || x.CustomUrl.TrimStart('/').ToLower() == identifier.ToLower());
+            return await _dbContext.Channels.AnyAsync(x =>
+                x.Id == identifier || x.CustomUrl.TrimStart('/').ToLower() == identifier.ToLower());
         }
     }
 }

@@ -19,7 +19,7 @@ function CategoryList({
         <>
             {categories && categories.length ? (
                 <div className="md:p-6 p-2">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 ">
                         {categories.map((category) => (
                             <button
                                 key={category.name}
@@ -32,7 +32,7 @@ function CategoryList({
                                             ? "bg-red-500 text-white"
                                             : "bg-gray-200"
                                 }
-                                inline-flex items-center rounded-full border  px-2.5 py-0.5 text-xs font-semibold transition-colors`}
+                                inline-flex items-center rounded-full border  px-2.5 py-0.5 font-semibold transition-colors`}
                             >
                                 {
                                     includeCategories.includes(category.name)

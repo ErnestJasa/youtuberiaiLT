@@ -40,18 +40,14 @@ function CardList() {
         [channelsLoading]
     );
 
-    async function getCount() {
-        return await getChannelsCount(searchQuery);
-    }
-
     useEffect(() => {
         getChannelsData();
-        getCount().then((response) => setTotalChannelsCount(response));
+        getChannelsCount(searchQuery).then((response) => setTotalChannelsCount(response));
     }, [searchQuery]);
 
     useEffect(() => {
         getChannelsData();
-        getCount().then((response) => setTotalChannelsCount(response));
+        getChannelsCount(searchQuery).then((response) => setTotalChannelsCount(response));
     }, []);
 
     useEffect(() => {
@@ -103,23 +99,3 @@ function CardList() {
 }
 
 export default CardList;
-
-/*
-
-<ul className="w-full gap-4 flex flex-wrap justify-around">
-{channels.map((channel, index) => {
-  return (
-    <li
-      id={channel.id}
-      className="w-full"
-      key={channel.id}
-      ref={
-        channels.length === index + 1 ? lastChannelElementRef : null
-      }
-    >
-      <Card key={channel.id} channel={channel} />
-    </li>
-  );
-})}
-</ul>
-*/

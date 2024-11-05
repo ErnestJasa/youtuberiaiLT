@@ -103,7 +103,7 @@ function Search({moderation = false}) {
                         >
                             Kategorijos
                         </button>
-                        <div className={`${showCategories ? "block" : "hidden"} md:block`}>
+                        <div className={`${showCategories ? "block" : "hidden"} md:block text-[15px]`}>
                             <CategoryList
                                 handleCategoryClick={handleCategorySearch}
                                 includeCategories={searchQuery.includeCategories}
@@ -123,19 +123,19 @@ function Search({moderation = false}) {
                         />
                         <button
                             type="submit"
-                            className="border border-l-0 border-gray-200 rounded-r-md px-5 hover:border-l hover:bg-gray-100 hover:border-[#e1a44f] active:bg-[#8573dea6]   hover:opacity-100"
+                            className="flex items-center justify-center border md:w-[35%] lg:w-auto px-4 border-l-0 border-gray-200 rounded-r-md hover:border-l hover:bg-gray-100 hover:border-[#e1a44f] active:bg-[#8573dea6]   hover:opacity-100"
                         >
-                            <img className="w-6" src={searchSVG} alt=""/>
+                            <img className="w-6 sm:w-5" src={searchSVG} alt="search-svg"/>
                         </button>
                     </div>
-                    <div className='flex w-full lg:w-[60%] my-2 lg:-my-0 gap-2'>
+                    <div className='grid grid-cols-5 lg:grid-cols-6 w-full lg:w-[60%] my-2 lg:-my-0 gap-2'>
                         <SortSelection
                             handleSortingChange={handleSortingChange}
                             sortBy={sortBy}
                         />
                         <button onClick={handleSortOrderChange}
-                                className='rounded-md text-sm border p-3 hover:bg-gray-100 active:bg-[#8573dea6]'>
-                            <img className='opacity-70 w-full' src={arrowsSVG} alt=""/>
+                                className='rounded-md border flex items-center lg:col-span-2 justify-center w-40px] hover:bg-gray-100 active:bg-[#8573dea6]'>
+                            <img className='opacity-70' src={arrowsSVG} alt="filter-svg"/>
                         </button>
                     </div>
                 </form>

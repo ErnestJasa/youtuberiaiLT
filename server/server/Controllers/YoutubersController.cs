@@ -70,11 +70,6 @@ namespace server.Controllers
         public IActionResult GetDailyChannel()
         {
             var channel = _dailyChannelStore.TodaysChannel;
-            if (channel is null)
-            {
-                return NotFound();
-            }
-
             return Ok(channel);
         }
 
