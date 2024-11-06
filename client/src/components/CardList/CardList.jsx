@@ -43,6 +43,7 @@ function CardList() {
     useEffect(() => {
         getChannelsData();
         getChannelsCount(searchQuery).then((response) => setTotalChannelsCount(response));
+        setPageNumber(1);
     }, [searchQuery]);
 
     useEffect(() => {
@@ -64,7 +65,6 @@ function CardList() {
             }
         }
     }, [pageNumber]);
-
     return (
         <div className="rounded-lg shadow-sm lg:col-span-3">
             {channels && channels.length ? (
@@ -80,7 +80,7 @@ function CardList() {
                                         channels.length === index + 1 ? lastChannelElementRef : null
                                     }
                                 >
-                                    <Card key={channel.id} channel={channel}/>
+                                    <Card channel={channel}/>
                                 </li>
                             );
                         })}

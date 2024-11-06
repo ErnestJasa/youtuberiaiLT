@@ -164,34 +164,7 @@ namespace DataAccessLayer.Repositories
                 }
             }
 
-            if (query.SortOrder is not null)
-            {
-                // By Title Sorting
-                if (query.SortOrder == Domain.Enums.SortOrder.ByHandleAscending)
-                {
-                    channels = channels.OrderBy(x => x.Title);
-                }
-
-                if (query.SortOrder == Domain.Enums.SortOrder.ByHandleDescending)
-                {
-                    channels = channels.OrderByDescending(x => x.Title);
-                }
-
-                // By Sub Count Sorting
-                if (query.SortOrder == Domain.Enums.SortOrder.BySubCountAscending)
-                {
-                    channels = channels.OrderBy(x => x.SubscriberCount);
-                }
-
-                if (query.SortOrder == Domain.Enums.SortOrder.BySubCountDescending)
-                {
-                    channels = channels.OrderByDescending(x => x.SubscriberCount);
-                }
-            }
-            else
-            {
-                channels = channels.OrderBy(x => x.Id);
-            }
+            channels = SortChannels(channels, query.SortOrder);
 
 
             int skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -317,31 +290,7 @@ namespace DataAccessLayer.Repositories
                 }
             }
 
-            if (query.SortOrder is not null)
-            {
-                // By Title Sorting
-                if (query.SortOrder == Domain.Enums.SortOrder.ByHandleAscending)
-                {
-                    channels = channels.OrderBy(x => x.Title);
-                }
-
-                if (query.SortOrder == Domain.Enums.SortOrder.ByHandleDescending)
-                {
-                    channels = channels.OrderByDescending(x => x.Title);
-                }
-
-                // By Sub Count Sorting
-                if (query.SortOrder == Domain.Enums.SortOrder.BySubCountAscending)
-                {
-                    channels = channels.OrderBy(x => x.SubscriberCount);
-                }
-
-                if (query.SortOrder == Domain.Enums.SortOrder.BySubCountDescending)
-                {
-                    channels = channels.OrderByDescending(x => x.SubscriberCount);
-                }
-            }
-
+            channels = SortChannels(channels, query.SortOrder);
             return await channels.CountAsync();
         }
 
@@ -349,6 +298,41 @@ namespace DataAccessLayer.Repositories
         {
             return await _dbContext.Channels.AnyAsync(x =>
                 x.Id == identifier || x.CustomUrl.TrimStart('/').ToLower() == identifier.ToLower());
+        }
+
+        private IQueryable<YoutubeChannel> SortChannels(IQueryable<YoutubeChannel> channels, SortOrder? sortOrder)
+        {
+            if (sortOrder is not null)
+            {
+                // By Title Sorting
+                if (sortOrder == Domain.Enums.SortOrder.ByHandleAscending)
+                {
+                    channels = channels.OrderBy(x => x.Title);
+                }
+
+                if (sortOrder == Domain.Enums.SortOrder.ByHandleDescending)
+                {
+                    channels = channels.OrderByDescending(x => x.Title);
+                }
+
+                // By Sub Count Sorting
+                if (sortOrder == Domain.Enums.SortOrder.BySubCountAscending)
+                {
+                    channels = channels.OrderBy(x => x.SubscriberCount);
+                }
+
+                if (sortOrder == Domain.Enums.SortOrder.BySubCountDescending)
+                {
+                    channels = channels.OrderByDescending(x => x.SubscriberCount);
+                }
+            }
+
+            if (sortOrder is null || sortOrder == SortOrder.Default)
+            {
+                channels = channels.OrderBy(x => x.Id);
+            }
+
+            return channels;
         }
     }
 }

@@ -1,9 +1,6 @@
 import {Link} from "wouter";
 import CardList from "../components/CardList/CardList";
-import CategoryList from "../components/CategoryList/CategoryList";
-import SuggestionForm from "../components/Forms/SuggestionForm/SuggestionForm";
 import Search from "../components/Search/Search";
-import SortSelection from "../components/SortSelection/SortSelection";
 
 function Home() {
     return (
