@@ -1,6 +1,6 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import searchSVG from "../../assets/icons/search.svg";
-import arrowsSVG from "../../assets/icons/arrowsUpDown.svg";
+import xCircleSVG from "../../assets/icons/xCircle.svg";
 import {AppContext} from "../../context/AppContext";
 import CategoryList from "../CategoryList/CategoryList";
 import SortSelection from "../SortSelection/SortSelection";
@@ -9,8 +9,7 @@ import ModerationCategoryList from "../CategoryList/ModerationCategoryList.jsx/M
 
 function Search({moderation = false}) {
     const inputRef = useRef(null);
-    const [sortOrder, setSortOrder] = useState("Descending");
-    const [sortBy, setSortBy] = useState("Default");
+    const [showCategories, setShowCategories] = useState(false);
 
     const {searchQuery, setSearchQuery} = useContext(AppContext);
 
@@ -68,21 +67,16 @@ function Search({moderation = false}) {
     }
 
     async function handleSortingChange(sortBy) {
-        setSortBy(sortBy);
-    }
-
-
-    function handleSortOrderChange() {
-        setSortOrder((prevOrder) => prevOrder === "Ascending" ? "Descending" : "Ascending");
-    }
-
-    useEffect(() => {
         setSearchQuery((prevQuery) => ({
             ...prevQuery,
-            sortOrder: sortBy === "Default" ? sortBy : sortBy + sortOrder
+            sortOrder: sortBy
         }));
-    }, [sortOrder, sortBy])
-    const [showCategories, setShowCategories] = useState(false);
+    }
+
+    function clearInput() {
+        inputRef.current.value = "";
+    }
+
     return (
         <div
             className="md:ml-4 lg:col-span-2  sticky top-0 md:top-24 bg-white max-h-[35%]  pt-6 z-10 "
@@ -97,12 +91,6 @@ function Search({moderation = false}) {
                     />
                 ) : (
                     <>
-                        <button
-                            onClick={() => setShowCategories(!showCategories)}
-                            className="bg-black text-white rounded-full mx-auto w-full md:hidden"
-                        >
-                            Kategorijos
-                        </button>
                         <div className={`${showCategories ? "block" : "hidden"} md:block text-[15px]`}>
                             <CategoryList
                                 handleCategoryClick={handleCategorySearch}
@@ -110,11 +98,18 @@ function Search({moderation = false}) {
                                 excludeCategories={searchQuery.excludeCategories}
                             />
                         </div>
+                        <button
+                            onClick={() => setShowCategories(!showCategories)}
+                            className="bg-black text-white rounded-full mx-auto w-full mt-2 md:hidden"
+                        >
+                            Kategorijos
+                        </button>
                     </>
                 )}
                 <div className="h-[2px] bg-[#e8e8e8] w-[85%] rounded-full mt-2 mx-auto"></div>
-                <form onSubmit={handleSearchSubmit} className="w-full my-3 lg:flex gap-2">
-                    <div className="w-full flex">
+                <form onSubmit={handleSearchSubmit}
+                      className="w-full my-3 lg:flex gap-2 ">
+                    <div className="w-full flex relative">
                         <input
                             ref={inputRef}
                             className=" py-1 rounded-l-md border border-gray-200  focus:outline-none focus:border focus:border-r hover:border-[#edd6b7] focus:border-[#e1a44f] w-full bg-inherit pl-3 text-xl font-normal"
@@ -127,16 +122,17 @@ function Search({moderation = false}) {
                         >
                             <img className="w-6 sm:w-5" src={searchSVG} alt="search-svg"/>
                         </button>
+                        <button onClick={clearInput}
+                                type="button"
+                                className="absolute right-14 md:right-[100px] lg:right-14 top-2 opacity-50 hover:opacity-100 active:opacity-100">
+                            <img className="w-6" src={xCircleSVG} alt="clear-input-svg"/>
+                        </button>
                     </div>
-                    <div className='grid grid-cols-5 lg:grid-cols-6 w-full lg:w-[60%] my-2 lg:-my-0 gap-2'>
+                    <div className="w-full lg:w-[60%] my-2 lg:-my-0">
                         <SortSelection
                             handleSortingChange={handleSortingChange}
-                            sortBy={sortBy}
+                            sortBy={searchQuery.sortOrder}
                         />
-                        <button onClick={handleSortOrderChange}
-                                className='rounded-md border flex items-center lg:col-span-2 justify-center w-40px] hover:bg-gray-100 active:bg-[#8573dea6]'>
-                            <img className='opacity-70' src={arrowsSVG} alt="filter-svg"/>
-                        </button>
                     </div>
                 </form>
             </div>
