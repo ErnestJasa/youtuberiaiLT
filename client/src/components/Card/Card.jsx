@@ -24,28 +24,27 @@ function Card({channel}) {
     useEffect(() => {
         setChannelData(channel);
     }, [channel]);
-    const [showDescription, setShowDescription] = useState(false)
+    const [showDescription, setShowDescription] = useState(false);
     return (
-        <div className="rounded-lg border bg-card text-card-foreground shadow-sm relative">
+        <div className="rounded-lg border shadow-sm relative">
             <div className="flex flex-col space-y-1.5 p-6">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start group">
                     <a target="_blank" href={"https://www.youtube.com/" + channelData.customUrl}
                        className="flex items-center gap-2">
                         <img alt={channelData.title + " thumbnail"} className="w-16 h-16 rounded-full"
                              src={channelData.thumbnail}
                              referrerPolicy="no-referrer"/>
-                        <div data-id="119">
+                        <div className="group-hover:underline">
                             <h3 className="text-2xl font-semibold leading-none tracking-tight">
                                 {channelData.title}
                             </h3>
                         </div>
-                        <img
-                            className="ml-[-4px] "
-                            width={"18px"}
-                            src={linkSVG}
-                        />
+                        {/*<img*/}
+                        {/*    className="ml-[-4px] "*/}
+                        {/*    width={"18px"}*/}
+                        {/*    src={linkSVG}*/}
+                        {/*/>*/}
                     </a>
-
                 </div>
                 {channelData.description.trim().length > 0 &&
                     <button
@@ -56,30 +55,34 @@ function Card({channel}) {
                 }
                 <div className="text-sm text-muted-foreground py-2" data-id="134">
                     {loading ? <Loader/> :
-                        <p className={`${showDescription ? 'inline' : 'hidden'} md:inline `}>{channelData.description}</p>}
+                        <p className={`${showDescription ? "inline" : "hidden"} md:inline `}>{channelData.description}</p>}
                 </div>
             </div>
-            <div className="p-6 pt-0" data-id="135">
+            <div className="p-3 sm:p-6 pt-0">
                 <div className="flex flex-wrap gap-2 mb-2" data-id="136">
                     {channelData.categories.map((category) => (
                         <div
                             key={category.name}
                             className="
                             inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors border-transparent bg-gray-200 hover:bg-gray-200/80"
-                            data-id="137" data-v0-t="badge">
-                            <img className="lucide lucide-tag w-3 h-3 mr-1" data-id="138" src={tagSVG} alt=""/>
+                        >
+                            <img className="w-3 h-3 mr-1" src={tagSVG} alt=""/>
                             {category.name}
                         </div>
                     ))}
                 </div>
-                <div className="text-sm text-muted-foreground flex">
+                <div className="text-sm flex">
                     <button onClick={() => handleUpdateClick(channelData.id)}
                             className="flex gap-1 hover:bg-gray-100 px-1 rounded-full">
                         <img className="mt-[2px]" width={"10px"} src={refreshSVG} alt=""/>
+                        <span>
                         Atnaujinta: {channelData.lastUpdatedAt}
+                        </span>
                     </button>
                     <p>
+                        <span className="hidden sm:inline">
                         |
+                        </span>
                         {channelData.subscriberCount > 1000 ||
                         channelData.subscriberCount === 0
                             ? " Prenumeratorių"

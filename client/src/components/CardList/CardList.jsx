@@ -3,6 +3,7 @@ import {AppContext} from "../../context/AppContext";
 import Card from "../Card/Card";
 import {getChannelsCount} from "../../api";
 import Loader from "../Loader/Loader";
+import DailyPickCard from "../Card/DailyPickCard/DailyPickCard.jsx";
 
 function CardList() {
     const [pageNumber, setPageNumber] = useState(1);
@@ -42,6 +43,7 @@ function CardList() {
 
     useEffect(() => {
         getChannelsData();
+        window.scrollTo(0, 0);
         getChannelsCount(searchQuery).then((response) => setTotalChannelsCount(response));
         setPageNumber(1);
     }, [searchQuery]);
@@ -70,6 +72,12 @@ function CardList() {
             {channels && channels.length ? (
                 <>
                     <ul className="p-6 pt-0">
+                        <li
+                            id="daily-channel"
+                            className="w-full mb-2"
+                        >
+                            <DailyPickCard/>
+                        </li>
                         {channels.map((channel, index) => {
                             return (
                                 <li
