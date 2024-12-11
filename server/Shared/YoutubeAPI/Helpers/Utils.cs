@@ -30,8 +30,8 @@ namespace Services.YoutubeAPI.Helpers
             string name;
             string description;
             string thumbnail;
-            string subscribers;
-            string videos;
+            string subscribers = "0 subscribers";
+            string videos = "0 videos";
             try
             {
                 id = (string)response["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][0]["tabRenderer"]["endpoint"]["browseEndpoint"]["browseId"];
@@ -41,9 +41,16 @@ namespace Services.YoutubeAPI.Helpers
                 thumbnail = (string)response["metadata"]["channelMetadataRenderer"]["avatar"]["thumbnails"][0]["url"];
 
                 JArray metaRows = (JArray)response["header"]["pageHeaderRenderer"]["content"]["pageHeaderViewModel"]["metadata"]["contentMetadataViewModel"]["metadataRows"];
-
-                subscribers = (string)metaRows.Last["metadataParts"][0]["text"]["content"];
-                videos = (string)metaRows.Last["metadataParts"][1]["text"]["content"];
+                               
+                if (metaRows != null && metaRows.Count > 0)
+                {
+                    var lastRow = metaRows.Last as JObject;
+                    if (lastRow != null && lastRow["metadataParts"] is JArray metadataParts)
+                    {
+                        subscribers = (string)metadataParts.ElementAtOrDefault(0)?["text"]?["content"];
+                        videos = (string)metadataParts.ElementAtOrDefault(1)?["text"]?["content"] ?? "0 videos";
+                    }
+                }         
             }
             catch (NullReferenceException)
             {
