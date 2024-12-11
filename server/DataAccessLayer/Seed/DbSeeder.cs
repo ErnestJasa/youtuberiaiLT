@@ -26,16 +26,14 @@ namespace DataAccessLayer.Seed
                 if (!_dbContext.Categories.Any())
                 {
                     var csvCategories = CSVParser<CategoryCSV>.TryParse(categoriesFilePath, ";");
-                    var categories = new List<Category>();
-                    foreach (var csvCategory in csvCategories)
-                    {
-                        var newCategory = new Category()
-                        {
-                            Name = csvCategory.Name,
-                            NormalizedName = csvCategory.Name.MyNormalize()
-                        };
-                        categories.Add(newCategory);
-                    }
+                    var categories = csvCategories
+                            .Select(csvCategory => new Category
+                            {
+                                Name = csvCategory.Name,
+                                NormalizedName = csvCategory.Name.MyNormalize()
+                            })
+                            .DistinctBy(x => x.NormalizedName)
+                            .ToList();
 
                     if (categories.Any())
                     {
@@ -59,7 +57,7 @@ namespace DataAccessLayer.Seed
                     List<ChannelCategory> channelCategories = new List<ChannelCategory>();
                     foreach (var csvChannel in csvChannels)
                     {
-                        var response = _ytService.getChannel(csvChannel.Handle).GetAwaiter().GetResult();
+                        var response = await _ytService.getChannel(csvChannel.Handle);
                         if (response is null)
                         {
                             continue;
@@ -92,7 +90,6 @@ namespace DataAccessLayer.Seed
                                 response.Categories.Add(newChannelCategory);
                             }
                         }
-
                         channels.Add(response);
                     }
 
