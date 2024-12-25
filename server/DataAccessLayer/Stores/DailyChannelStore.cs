@@ -16,10 +16,21 @@ namespace DataAccessLayer.Stores
         public void SetSelectedChannel(YoutubeChannel selectedChannel)
         {
             lock (_lock)
-            { 
+            {
                 YesterdaysChannel = TodaysChannel;
                 TodaysChannel = selectedChannel;
             }
+        }
+
+        public void UpdateTodaysChannel(YoutubeChannel updatedChannel)
+        {
+            TodaysChannel.Title = updatedChannel.Title;
+            TodaysChannel.Description = updatedChannel.CustomUrl;
+            TodaysChannel.Description = updatedChannel.Description;
+            TodaysChannel.Thumbnail = updatedChannel.Thumbnail;
+            TodaysChannel.SubscriberCount = updatedChannel.SubscriberCount;
+            TodaysChannel.VideoCount = updatedChannel.VideoCount;
+            TodaysChannel.UpdateDate();
         }
     }
 }

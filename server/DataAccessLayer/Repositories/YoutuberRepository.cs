@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Interfaces;
+using DataAccessLayer.Stores;
 using Domain;
 using Domain.Enums;
 using Domain.Models;
@@ -16,11 +17,14 @@ namespace DataAccessLayer.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly IYoutubeService _ytService;
+        private readonly DailyChannelStore _dailyChannelStore;
 
-        public YoutuberRepository(AppDbContext dbContext, IYoutubeService ytService)
+        public YoutuberRepository(AppDbContext dbContext, IYoutubeService ytService,
+            DailyChannelStore dailyChannelStore)
         {
             _dbContext = dbContext;
             _ytService = ytService;
+            _dailyChannelStore = dailyChannelStore;
         }
 
         public async Task<Result<YoutubeChannel>> RemoveCetegoryAsync(string channelId, string category)
@@ -240,6 +244,11 @@ namespace DataAccessLayer.Repositories
             if (channel is null)
             {
                 return Result.Fail(ErrorTypes.NotFound);
+            }
+
+            if (_dailyChannelStore.TodaysChannel.Id == channel.Id)
+            {
+                _dailyChannelStore.UpdateTodaysChannel(channel);
             }
 
             existingChannel.Thumbnail = channel.Thumbnail;

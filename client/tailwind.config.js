@@ -10,7 +10,12 @@ export default {
         "gray-light": "#e8e8e8",
         "gray-dark": "#101010",
         purple: "#9a8be2",
+        "pink-main": "#d52183",
         gold: "#ffab34",
+      },
+      fontFamily: {
+        novecento: ["Novecento", "sans-serif"],
+        "bbz-Regular": ["bbz-Regular", "sans-serif"],
       },
     },
   },
