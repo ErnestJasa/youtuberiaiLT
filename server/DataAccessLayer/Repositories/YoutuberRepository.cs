@@ -150,7 +150,7 @@ namespace DataAccessLayer.Repositories
                 if (query.IncludeCategories.Count() > 0)
                 {
                     channels = channels.Where(c => query.IncludeCategories
-                        .Any(category => c.Categories
+                        .All(category => c.Categories
                             .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
                                       || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }
@@ -281,7 +281,7 @@ namespace DataAccessLayer.Repositories
                 if (query.IncludeCategories.Count() > 0)
                 {
                     channels = channels.Where(c => query.IncludeCategories
-                        .Any(category => c.Categories
+                        .All(category => c.Categories
                             .Any(x => x.CategoryName.ToLower().Contains(category.ToLower())
                                       || x.CategoryNormalizedName.ToLower().Contains(category.ToLower()))));
                 }

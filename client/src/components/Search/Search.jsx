@@ -23,9 +23,6 @@ function Search({ moderation = false }) {
   }
 
   function handleCategorySearch(categoryName) {
-    const prevIncludeCategories = searchQuery.includeCategories;
-    const prevExcludeCategories = searchQuery.includeCategories;
-
     // add to includes array
     if (
       !searchQuery.includeCategories.includes(categoryName) &&
@@ -33,7 +30,7 @@ function Search({ moderation = false }) {
     ) {
       setSearchQuery((prevQuery) => ({
         ...prevQuery,
-        includeCategories: [...prevIncludeCategories, categoryName],
+        includeCategories: [...prevQuery.includeCategories, categoryName],
       }));
       return;
     }
@@ -44,10 +41,11 @@ function Search({ moderation = false }) {
         searchQuery.includeCategories,
         categoryName
       );
+
       setSearchQuery((prevQuery) => ({
         ...prevQuery,
         includeCategories: tempIncludeCategories,
-        excludeCategories: [...prevExcludeCategories, categoryName],
+        excludeCategories: [...prevQuery.excludeCategories, categoryName],
       }));
       return;
     }
@@ -83,7 +81,6 @@ function Search({ moderation = false }) {
       style={{ maxHeight: "calc(-2rem + 100vh)", overflowY: "auto" }}
     >
       <div className=" border px-2">
-        {/* <div className="h-[2px] bg-[#e8e8e8] w-[85%]  mt-2 mx-auto"></div> */}
         <form
           onSubmit={handleSearchSubmit}
           className="w-full my-3 lg:flex gap-2 "
