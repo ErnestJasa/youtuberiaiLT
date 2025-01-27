@@ -1,7 +1,4 @@
-﻿using Google.Apis.Services;
-using Google.Apis.YouTube.v3;
-using Microsoft.Extensions.Configuration;
-using Domain.Models.Youtube;
+﻿using Domain.Models.Youtube;
 using Services.YoutubeAPI.Helpers;
 using Services.YoutubeAPI.Helpers.Wrappers;
 using System.Diagnostics;
@@ -10,11 +7,6 @@ namespace Services.YoutubeAPI
 {
     public class YoutubeService : IYoutubeService
     {
-        private readonly IConfiguration _config;
-        public YoutubeService(IConfiguration config)
-        {
-            _config = config;
-        }
         public async Task<YoutubeChannel?> getChannelById(string channelId)
         {
             Result<YoutubeChannel> result = await Utils.GetChannelAsync(channelId);

@@ -1,12 +1,4 @@
-﻿using Domain.Models.Youtube;
-using Helpers.RequestObjects;
-using Microsoft.Extensions.Configuration;
-using Services.YoutubeAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Helpers.RequestObjects;
 
 namespace Helpers.DiscordSuggestions
 {
